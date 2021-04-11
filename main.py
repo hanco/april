@@ -1,7 +1,8 @@
 import itertools
+from tqdm import tqdm
 
-n = 12
-k = 7
+n = 20
+k = n - 7
 wheel_of_choice = list(range(1, n+1))
 pos = -1
 
@@ -25,19 +26,26 @@ def step(q, wheel):
 def all_spins():
     global pos
     winnings = []
-    for q in range(1, 100000):
+    trys = 10_000_000
+    t = tqdm(range(1, trys))
+    for q in t:
+        t.set_description("# combinations: %s at n: %d" % (len(combinations), n))
         wheel = list(wheel_of_choice)
         pos = -1
         while len(wheel) > k:
             wheel = step(q, wheel)
-        if wheel not in winnings:
-            winnings.append(tuple(wheel))
+        if tuple(wheel) in combinations:
+            combinations.remove(tuple(wheel))
+            if not combinations:
+                return
+
 
     rest = [item for item in combinations if item not in winnings]
 
     return rest
 
-print(find_combinations())
+
+find_combinations()
 
 rest = all_spins()
 
